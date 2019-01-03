@@ -17,6 +17,10 @@ class Home extends Component {
                     <p>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur laborum velit laudantium cum voluptates repudiandae vel ullam quae distinctio, nesciunt quis eum doloribus accusamus temporibus nihil veniam! Iusto numquam iure ipsum natus. Debitis quis dolorem delectus commodi natus aut recusandae incidunt dignissimos voluptates ea saepe, corrupti accusantium, impedit ratione vel! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veniam culpa nam consectetur! Expedita id maxime facere ipsa atque quos, facilis ullam temporibus obcaecati, reiciendis, aliquid aspernatur. Unde ut itaque fuga, rem cupiditate repellat amet error expedita aut similique a maiores excepturi modi placeat vitae ex eos reiciendis laborum explicabo.
                     </p>
+
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi sed possimus dolores iusto in non quod porro nemo, est asperiores maiores fuga nobis illum repellendus rerum eligendi blanditiis neque laborum mollitia officia recusandae debitis esse! Commodi, nihil. Sunt quae dolorem magni doloribus repudiandae voluptatem corrupti aut ducimus! Dolorum, blanditiis hic?
+                    </p>
                 </div>
                 
             </div>
