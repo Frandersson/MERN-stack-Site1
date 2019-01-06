@@ -7,7 +7,7 @@ class Navbar extends Component {
         return (
             <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
                 <div className = "container">
-                    <Link className="navbar-brand" to="/">NavBar</Link>
+                    <Link className="navbar-brand" to="/">LogisticsAB</Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                     </button>
@@ -16,6 +16,9 @@ class Navbar extends Component {
                         <ul className="navbar-nav ml-auto">
                             <li className="nav-item mr-4">
                             <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
+                            </li>
+                            <li className="nav-item mr-4">
+                            <Link className="nav-link" to="/">Orders <span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item mr-4">
                             <Link className="nav-link" to="/About">About</Link>
