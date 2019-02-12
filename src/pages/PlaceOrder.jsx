@@ -5,7 +5,7 @@ class PlaceOrder extends Component {
 
     state = {
         curNamn: '',
-        curSaldo: '',
+        curSaldo: '',        /* Fixa så att detta är en int */
         curPlats: '',
         products: []
     }
@@ -62,6 +62,21 @@ class PlaceOrder extends Component {
         this.setState({curPlats: e.target.value});
     }
 
+    sortBy = (e) => {
+        if (e.target.value === "Choose...") {
+            return;
+        } 
+
+        fetch(`http://localhost:3001/getAndSort/${e.target.value}`)
+            .then(res => res.json())
+            .then(res => {
+                this.setState({products: res});
+                console.log(res);
+            })
+            .catch((err) => console.log(err))
+        }
+        
+
     render() {
         const products = this.state.products;
         return (
@@ -70,7 +85,6 @@ class PlaceOrder extends Component {
                     <h2>Place an Order</h2> <hr/>
                     <p>Specify the order details and click 'submit' when you are done to place the order.</p>
                 </div>
-
 
                 <div className = "container text-center mt-4">
                     {/* FORM */}
@@ -104,6 +118,19 @@ class PlaceOrder extends Component {
 
                         <button type="submit" className="btn btn-dark mb-2 ml-4">Submit</button>
                     </form>
+                </div>
+
+            
+                <div className = "container mt-4">
+                    <label className="mr-sm-2" htmlFor="inlineFormCustomSelect">Sort by:</label>
+                        <select className="form-control" id="inlineFormCustomSelect" onChange = {this.sortBy}>
+                            <option defaultValue>Choose...</option>
+                            <option value='id'>ID</option>
+                            <option value='namn'>Namn</option>
+                            <option value='lagersaldo'>Lagersaldo</option>
+                            <option value='plats'>Plats</option>
+                            <option value='datum'>Date</option>
+                        </select>
                 </div>
 
 
