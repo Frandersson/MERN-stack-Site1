@@ -1,12 +1,29 @@
 import React, {Component} from 'react';
 import './PlaceOrder.css';
 
+/*
+const formValid = (formErrors) => {
+    let valid = true;
+
+    Object.values(formErrors).forEach(val => { 
+        val.length > 0 && (valid = false);
+    });
+
+    return valid;
+} 
+*/
+
 class PlaceOrder extends Component {
 
     state = {
         curNamn: '',
-        curSaldo: '',        /* Fixa så att detta är en int */
+        curSaldo: '',        
         curPlats: '',
+        formErrors: {
+            curNamn: "",
+            curSaldo: "",
+            curPlats: "",
+        },
         products: []
     }
 
@@ -25,9 +42,29 @@ class PlaceOrder extends Component {
             .catch((err) => console.log(err))
     }
 
-    addProduct = (event) => {
-        event.preventDefault();
+    resolveRes = (response) => {
+        if (response.status === 200) {
+            this.getProducts();
+            this.setState({curNamn: '', curSaldo: '', curPlats: ''});
+            console.log("OK");
+            console.log(response);
+        } else {
+            alert("Rejected");
+            console.log("Rejected.");
+            console.log(response);
+        }
+    }
 
+    addProduct = (event) => {
+        // VALIDATION   
+        event.preventDefault();
+        /*
+        if (formValid(this.state.formErrors)) {
+            console.log("SUCCESS");
+        } else {
+            console.error("FAIL");
+        }
+        */
         fetch('http://localhost:3001/addproduct', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
@@ -37,16 +74,11 @@ class PlaceOrder extends Component {
                 plats: this.state.curPlats
             })
         })
-        .then(res => {
-            this.getProducts();
-            this.setState({curNamn: '', curSaldo: '', curPlats: ''});
-            console.log("POSTAD!!!");
-            console.log(res);
-        })
+        .then(res => this.resolveRes(res))  // Server validation
         .catch((err) => console.log(err))
     }
 
-
+    // Input handlers
     handleNameChange = (e) => {
         console.log("Name changed");
         this.setState({curNamn: e.target.value});
@@ -62,6 +94,7 @@ class PlaceOrder extends Component {
         this.setState({curPlats: e.target.value});
     }
 
+    // Ordering
     sortBy = (e) => {
         if (e.target.value === "Choose...") {
             return;
@@ -76,7 +109,7 @@ class PlaceOrder extends Component {
             .catch((err) => console.log(err))
         }
         
-
+    // Main render
     render() {
         const products = this.state.products;
         return (
@@ -88,23 +121,23 @@ class PlaceOrder extends Component {
 
                 <div className = "container text-center mt-4">
                     {/* FORM */}
-                    <form className="form-inline" method = 'POST' onSubmit = {this.addProduct}>
+                    <form className="form-inline" method = 'POST' onSubmit = {this.addProduct} noValidate>
                         <label className="sr-only" htmlFor="inlineFormProduktNamn">Name</label>
                         <div className="input-group mb-2 mr-sm-2">
                             <div className="input-group-prepend">
                             <div className="input-group-text"><b>Namn:</b></div>
                             </div>
                             <input type="text" className="form-control" id="inlineFormProduktNamn" placeholder="Produktnamn" 
-                                   value = {this.state.curNamn} onChange = {this.handleNameChange}></input>
+                                   value = {this.state.curNamn} onChange = {this.handleNameChange} noValidate></input>
                         </div>
 
-                        <label className="sr-only" htmlFor="inlineFormInputGroupUsername2">Lagersaldo</label>
+                        <label className="sr-only" htmlFor="inlineFormInputLagersaldo">Lagersaldo</label>
                         <div className="input-group mb-2 mr-sm-2">
                             <div className="input-group-prepend">
                             <div className="input-group-text"><b>Lagersaldo:</b></div>
                             </div>
-                            <input type="text" className="form-control" id="inlineFormInputGroupUsername2" placeholder="Lagersaldo" 
-                                   value = {this.state.curSaldo} onChange = {this.handleSaldoChange}></input>
+                            <input type="text" className="form-control" id="inlineFormLagersaldo" placeholder="Lagersaldo" 
+                                   value = {this.state.curSaldo} onChange = {this.handleSaldoChange} noValidate></input>
                         </div>
 
                         <label className="sr-only" htmlFor="inlineFormPlats">Plats</label>
@@ -113,7 +146,7 @@ class PlaceOrder extends Component {
                             <div className="input-group-text"><b>Plats:</b></div>
                             </div>
                             <input type="text" className="form-control" id="inlineFormPlats" placeholder="Plats" 
-                                   value = {this.state.curPlats} onChange = {this.handlePlatsChange}></input>
+                                   value = {this.state.curPlats} onChange = {this.handlePlatsChange} noValidate></input>
                         </div>
 
                         <button type="submit" className="btn btn-dark mb-2 ml-4">Submit</button>

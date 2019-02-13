@@ -49,6 +49,11 @@ app.get('/getAndSort/:sorter', (req, res) => {
 
 // Add a product
 app.post('/addproduct', (req, res) => {
+    if (req.body.lagersaldo === '' || req.body.namn === '' || req.body.plats === '' || isNaN(req.body.lagersaldo)) {
+        res.sendStatus(400);
+        return;
+    }
+
     let data = {
         namn: req.body.namn,
         lagersaldo: req.body.lagersaldo,
