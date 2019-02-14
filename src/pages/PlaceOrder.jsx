@@ -1,39 +1,26 @@
 import React, {Component} from 'react';
 import './PlaceOrder.css';
 
-/*
-const formValid = (formErrors) => {
-    let valid = true;
-
-    Object.values(formErrors).forEach(val => { 
-        val.length > 0 && (valid = false);
-    });
-
-    return valid;
-} 
-*/
 
 class PlaceOrder extends Component {
+    constructor(props) {
+        super(props);
 
-    state = {
-        curNamn: '',
-        curSaldo: '',        
-        curPlats: '',
-        formErrors: {
-            curNamn: "",
-            curSaldo: "",
-            curPlats: "",
-        },
-        products: []
+        this.state = {
+            curNamn: '',
+            curSaldo: '',        
+            curPlats: '',
+            products: []
+        }
     }
-
+    
     componentDidMount() {
         console.log("Successful mount");
         this.getProducts();
     }
 
     getProducts = _ => {
-        fetch('http://localhost:3001/getall')
+        fetch('http://localhost:3001/getTen')
             .then(res => res.json())
             .then(res => {
                 this.setState({products: res});
@@ -55,43 +42,58 @@ class PlaceOrder extends Component {
         }
     }
 
+    checkEmptyValues = (obj) => {
+        var emptyBool = false;
+        Object.values(obj).forEach(val => {
+            if (val === '') emptyBool = true;
+        })
+        return emptyBool;
+    }
+
     addProduct = (event) => {
-        // VALIDATION   
         event.preventDefault();
-        /*
-        if (formValid(this.state.formErrors)) {
-            console.log("SUCCESS");
-        } else {
-            console.error("FAIL");
+
+        const data = {
+            namn: this.state.curNamn,
+            lagersaldo: this.state.curSaldo,
+            plats: this.state.curPlats
         }
-        */
+
+        if (this.checkEmptyValues(data)) {
+            alert("Please fill in all the fields");
+            return;
+        }  
+
         fetch('http://localhost:3001/addproduct', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({
-                namn: this.state.curNamn,
-                lagersaldo: this.state.curSaldo,
-                plats: this.state.curPlats
-            })
+            body: JSON.stringify(data)
         })
         .then(res => this.resolveRes(res))  // Server validation
         .catch((err) => console.log(err))
     }
 
     // Input handlers
-    handleNameChange = (e) => {
-        console.log("Name changed");
-        this.setState({curNamn: e.target.value});
-    }
+    handleChange = (e) => {
+        e.preventDefault();
+        const {name, value} = e.target;
 
-    handleSaldoChange = (e) => {
-        console.log("Saldo changed");
-        this.setState({curSaldo: e.target.value});
-    }
+        //console.log("Name: " + name);
+        //console.log("Value: " + value);
 
-    handlePlatsChange = (e) => {
-        console.log("Plats changed");
-        this.setState({curPlats: e.target.value});
+        switch (name) {
+            case 'inlineFormProduktNamn':
+              this.setState({curNamn: value});
+              break;
+            case 'inlineFormLagersaldo':
+              this.setState({curSaldo: value});
+              break;
+            case 'inlineFormPlats':
+              this.setState({curPlats: value});
+              break;
+            default: 
+              break;
+        }      
     }
 
     // Ordering
@@ -100,7 +102,7 @@ class PlaceOrder extends Component {
             return;
         } 
 
-        fetch(`http://localhost:3001/getAndSort/${e.target.value}`)
+        fetch(`http://localhost:3001/getAndSortTen/${e.target.value}`)
             .then(res => res.json())
             .then(res => {
                 this.setState({products: res});
@@ -112,6 +114,7 @@ class PlaceOrder extends Component {
     // Main render
     render() {
         const products = this.state.products;
+        
         return (
             <div>
                 <div className = "container text-center mt-4">
@@ -128,7 +131,8 @@ class PlaceOrder extends Component {
                             <div className="input-group-text"><b>Namn:</b></div>
                             </div>
                             <input type="text" className="form-control" id="inlineFormProduktNamn" placeholder="Produktnamn" 
-                                   value = {this.state.curNamn} onChange = {this.handleNameChange} noValidate></input>
+                                   value = {this.state.curNamn} name = "inlineFormProduktNamn" onChange = {this.handleChange} noValidate></input>
+                            
                         </div>
 
                         <label className="sr-only" htmlFor="inlineFormInputLagersaldo">Lagersaldo</label>
@@ -137,8 +141,10 @@ class PlaceOrder extends Component {
                             <div className="input-group-text"><b>Lagersaldo:</b></div>
                             </div>
                             <input type="text" className="form-control" id="inlineFormLagersaldo" placeholder="Lagersaldo" 
-                                   value = {this.state.curSaldo} onChange = {this.handleSaldoChange} noValidate></input>
+                                   value = {this.state.curSaldo} name = "inlineFormLagersaldo" onChange = {this.handleChange} noValidate></input>
+                            
                         </div>
+                        
 
                         <label className="sr-only" htmlFor="inlineFormPlats">Plats</label>
                         <div className="input-group mb-2 mr-sm-2">
@@ -146,7 +152,8 @@ class PlaceOrder extends Component {
                             <div className="input-group-text"><b>Plats:</b></div>
                             </div>
                             <input type="text" className="form-control" id="inlineFormPlats" placeholder="Plats" 
-                                   value = {this.state.curPlats} onChange = {this.handlePlatsChange} noValidate></input>
+                                   value = {this.state.curPlats} name = "inlineFormPlats" onChange = {this.handleChange} noValidate></input>
+                            
                         </div>
 
                         <button type="submit" className="btn btn-dark mb-2 ml-4">Submit</button>
@@ -168,6 +175,7 @@ class PlaceOrder extends Component {
 
 
                 <div className = "container text-center mt-4">
+                
                 <table className="table table-striped table-dark">
                     <thead>
                         <tr>
@@ -188,6 +196,13 @@ class PlaceOrder extends Component {
                                 <td>{item.datum}</td>
                             </tr>
                         ))}
+                            <tr>
+                                <th scope ="row">...</th>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
                     </tbody>
                     </table>
                 </div>

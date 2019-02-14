@@ -38,7 +38,7 @@ class Home extends Component {
                             Click here if you want to list all available, recent orders. You will be redirected to the correct page.
                         </Link>
 
-                        <Link className = "col-sm text-center border link" to = "/">
+                        <Link className = "col-sm text-center border link" to = "/SearchOrder">
                             <img src = {require("../images/search-orders.jpg")} 
                                     width = "220" height = "200" alt = "img not found." 
                                     className = "rounded-circle mt-4" />

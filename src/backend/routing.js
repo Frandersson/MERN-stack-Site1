@@ -17,10 +17,8 @@ db.connect((err) => {
 });
 
 const app = express();
-
 // Cross-origin requests
 app.use(cors());
-
 // Required for parsing bodies in POST requests
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -36,7 +34,7 @@ app.get('/getall', (req, res) => {
     });
 });
 
-// Fetch and sort by param
+// Fetch and sort all by param
 app.get('/getAndSort/:sorter', (req, res) => {
     let column = req.params.sorter;
     let sql = `SELECT * FROM produkter ORDER BY ${column}`;
@@ -47,10 +45,32 @@ app.get('/getAndSort/:sorter', (req, res) => {
     })
 });
 
+// Fetch 10 latest products
+app.get('/getTen', (req, res) => {
+    let sql = 'SELECT * FROM produkter ORDER BY datum DESC LIMIT 10';
+    
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        res.send(result);
+    });
+});
+
+// Fetch and sort ten  by param
+app.get('/getAndSortTen/:sorter', (req, res) => {
+    let column = req.params.sorter;
+    let sql = `SELECT * FROM produkter ORDER BY ${column} LIMIT 10`;
+
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        res.send(result);
+    })
+});
+
 // Add a product
 app.post('/addproduct', (req, res) => {
+    
     if (req.body.lagersaldo === '' || req.body.namn === '' || req.body.plats === '' || isNaN(req.body.lagersaldo)) {
-        res.sendStatus(400);
+        res.status(400).send('hej');
         return;
     }
 
